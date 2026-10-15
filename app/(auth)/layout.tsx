@@ -1,9 +1,7 @@
 import Image from "next/image";
-import codingImage from "../public/docs/coding.png";
+import codingImage from "../../public/docs/coding.png";
 
-//Add the picture and background for the signup and signin form here.
-
-const SignFrame = ({ children }: { children: React.ReactNode }) => {
+const Layout = ({ children }: { children: React.ReactNode }) => {
   return (
     <div className="flex flex-col md:flex-row w-full">
       <div className="flex items-center justify-center bg-[#23155B] md:w-1/2 md:h-screen p-4">
@@ -18,4 +16,4 @@ const SignFrame = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
-export default SignFrame;
+export default Layout;

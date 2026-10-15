@@ -1,7 +1,7 @@
 import Image from "next/image";
-import Counter from "../../components/Counter";
+import Counter from "../../../components/Counter";
 import Link from "next/link";
-import BlogsCard from "../../components/BlogsCard";
+import BlogsCard from "../../../components/BlogsCard";
 
 export default function Blogs() {
   return (
