@@ -6,7 +6,7 @@ const NavBar = () => {
   return (
     <header className="flex flex-row justify-between items-center bg-off-white p-4">
       <h2 className="font-bold">
-        <Link href="/dashboard">Challenges</Link>
+        <Link href="/challenges">Challenges</Link>
       </h2>
       <Button
         onClick={() => {

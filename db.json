@@ -31,14 +31,27 @@
       "createdAt": "2024-04-02"
     },
     {
-      "id": "4",
       "title": "Merge Sort",
       "category": "Algorithms",
-      "description": "### Problem Statement:\nImplement the merge sort algorithm to efficiently sort an array of elements. The merge sort algorithm divides the array into two halves, recursively sorts the sub-arrays, and then merges the sorted halves.",
       "level": "Hard",
-      "code": {},
-      "tests": [],
-      "createdAt": "2024-04-02"
+      "description": "### Problem Statement:\nImplement the merge sort algorithm to efficiently sort an array of elements. The merge sort algorithm divides the array into two halves, recursively sorts the sub-arrays, and then merges the sorted halves.",
+      "code": {
+        "functionName": "MergeSort",
+        "language": "py",
+        "code": "mergeSort(array)\n  ##\nreturn array"
+      },
+      "tests": [
+        {
+          "type": "string",
+          "name": "[8,5,9,10,-2]",
+          "value": "string",
+          "output": "[-2,5,8,9,10]",
+          "weight": 1
+        }
+      ],
+      "createdAt": "2026-10-21",
+      "id": "FJ6lur9BkOc"
     }
-  ]
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
 }

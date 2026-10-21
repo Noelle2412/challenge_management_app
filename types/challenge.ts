@@ -17,4 +17,17 @@ export type ChallengeInput = Omit<Challenge, "id" | "createdAt">;
 
 export type ChallengeLevel = "Easy" | "Moderate" | "Hard";
 
-export type ChallengeTest = { input: string; output: string };
+export type ChallengeTest = {
+  type: TestCaseType;
+  name: string;
+  value: string | number;
+  output: string;
+  weight: number;
+};
+
+export type TestCaseType = "number" | "string";
+
+export type ActionResult = {
+  success: boolean;
+  message: string;
+};

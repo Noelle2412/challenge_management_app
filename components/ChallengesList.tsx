@@ -1,9 +1,5 @@
 // components/ChallengesList.tsx
 import { getChallenges } from "@/actions/challenges";
-import { Button } from "./ui/button";
-import editIcon from "../public/docs/editIcon.svg";
-import deleteIcon from "../public/docs/recycle-bin-icon.svg";
-import Image from "next/image";
 import {
   Table,
   TableBody,
@@ -13,6 +9,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import Link from "next/link";
+import DeleteChallengeButton from "@/components/DeleteChallengeButton";
+import EditChallengeButton from "@/components/EditChallengeButton";
 
 const ChallengesList = async () => {
   const challenges = await getChallenges();
@@ -31,19 +30,17 @@ const ChallengesList = async () => {
       <TableBody>
         {challenges.map((challenge) => (
           <TableRow key={challenge.id}>
-            <TableCell className="font-medium">{challenge.title}</TableCell>
+            <TableCell className="font-medium">
+              <Link href={`/challenges/${challenge.id}`}>
+                {challenge.title}
+              </Link>
+            </TableCell>
             <TableCell>{challenge.category}</TableCell>
             <TableCell>{challenge.level}</TableCell>
             <TableCell>{challenge.createdAt}</TableCell>
             <TableCell>
-              <Button className="bg-indigo-500">
-                {" "}
-                <Image src={editIcon} alt="Edit" />
-              </Button>
-              <Button className="bg-red-500">
-                {" "}
-                <Image src={deleteIcon} alt="Delete" />
-              </Button>
+              <EditChallengeButton id={challenge.id} />
+              <DeleteChallengeButton id={challenge.id} />
             </TableCell>
           </TableRow>
         ))}
