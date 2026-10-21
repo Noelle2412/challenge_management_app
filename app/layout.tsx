@@ -3,13 +3,13 @@ import { Martel_Sans, Noto_Sans_Khojki } from "next/font/google";
 import "./globals.css";
 
 const martelSans = Martel_Sans({
-  weight: "600",
+  weight: ["600", "800"],
   variable: "--font-martel-sans",
   subsets: ["latin"],
 });
 
 const notoSans = Noto_Sans_Khojki({
-  weight: "400",
+  weight: ["400"],
   variable: "--font-noto-sans-khojki",
   subsets: ["latin"],
 });
