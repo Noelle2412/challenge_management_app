@@ -14,5 +14,10 @@ export default async function EditChallengePage({
     notFound();
   }
 
-  return <ChallengeForm challenge={challenge} />;
+  return (
+    <div className="flex flex-col gap-4 p-4">
+      <h2 className="text-2xl my-4">Edit Challenge</h2>
+      <ChallengeForm challenge={challenge} />
+    </div>
+  );
 }

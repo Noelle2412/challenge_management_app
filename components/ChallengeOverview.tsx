@@ -60,24 +60,26 @@ const ChallengeOverview = async ({ id }: { id: string }) => {
         </div>
       </section>
 
-      {/* Code */}
-      <section>
-        <h2 className="text-xl font-semibold mb-2">
-          Code{" "}
-          <span className="text-sm font-normal text-gray-500">
-            ({challenge.code.language})
-          </span>
-        </h2>
-        <p className="text-sm text-gray-600 mb-2">
-          Function name:{" "}
-          <code className="rounded bg-gray-100 px-1.5 py-0.5">
-            {challenge.code.functionName}
-          </code>
-        </p>
-        <pre className="overflow-x-auto rounded-md bg-gray-900 p-4 text-sm text-gray-100">
-          <code>{challenge.code.code}</code>
-        </pre>
-      </section>
+      {/* Code (seed challenges have an empty `code` object) */}
+      {challenge.code?.code && (
+        <section>
+          <h2 className="text-xl font-semibold mb-2">
+            Code{" "}
+            <span className="text-sm font-normal text-gray-500">
+              ({challenge.code.language})
+            </span>
+          </h2>
+          <p className="text-sm text-gray-600 mb-2">
+            Function name:{" "}
+            <code className="rounded bg-gray-100 px-1.5 py-0.5">
+              {challenge.code.functionName}
+            </code>
+          </p>
+          <pre className="overflow-x-auto rounded-md bg-gray-900 p-4 text-sm text-gray-100">
+            <code>{challenge.code.code}</code>
+          </pre>
+        </section>
+      )}
 
       {/* Tests */}
       <section>

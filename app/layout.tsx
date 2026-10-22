@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { Toaster } from "@/components/ui/sonner";
+import StoreProvider from "@/components/storeProvider";
+import { Toaster } from "sonner";
 import { Martel_Sans, Noto_Sans_Khojki } from "next/font/google";
 import "./globals.css";
 
@@ -26,7 +27,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="en"
       className={`${martelSans.variable} ${notoSans.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col">
-        {children}
+        <StoreProvider>{children}</StoreProvider>
         <Toaster />
       </body>
     </html>

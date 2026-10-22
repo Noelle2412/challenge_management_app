@@ -6,11 +6,15 @@ import type {
   ChallengeInput,
 } from "@/types/challenge";
 
-const API_URL = process.env.API_URL ?? "http://localhost:3001";
+const API_URL = process.env.API_URL ?? "http://localhost:3000";
 
-function refreshPages() {
+function refreshPages(id?: string) {
   revalidatePath("/");
   revalidatePath("/challenges");
+  if (id) {
+    revalidatePath(`/challenges/${id}`);
+    revalidatePath(`/challenges/${id}/edit`);
+  }
 }
 
 export async function getChallenges(): Promise<Challenge[]> {
@@ -86,7 +90,7 @@ export async function updateChallenge(
         message: `Failed to update the challenge (status ${res.status}).`,
       };
     }
-    refreshPages();
+    refreshPages(id);
     return { success: true, message: "Challenge updated successfully." };
   } catch {
     return {
@@ -109,7 +113,7 @@ export async function deleteChallenge(id: string): Promise<ActionResult> {
       };
     }
 
-    refreshPages();
+    refreshPages(id);
     return { success: true, message: "Challenge deleted successfully." };
   } catch {
     return {

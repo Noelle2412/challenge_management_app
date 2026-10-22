@@ -27,6 +27,8 @@ const DeleteChallengeButton = ({ id }: { id: string }) => {
       variant="destructive"
       size="sm"
       onClick={handleDelete}
+      disabled={isPending}
+      aria-label="Delete challenge"
       className=" bg-red-500">
       <Image src={deleteIcon} alt="Delete" className="w-5" />
     </Button>

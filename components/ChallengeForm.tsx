@@ -1,6 +1,8 @@
 "use client";
 
-import { useTransition, useState } from "react";
+import { useTransition, useEffect } from "react";
+import { useAppDispatch, useAppSelector } from "@/store";
+import { setLanguage } from "@/store/editorSlice";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
@@ -10,17 +12,19 @@ import CodeMirror from "@uiw/react-codemirror";
 import { javascript } from "@codemirror/lang-javascript";
 import { python } from "@codemirror/lang-python";
 import "easymde/dist/easymde.min.css";
-
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { createChallenge, updateChallenge } from "@/actions/challenges";
 import type { Challenge, ChallengeInput } from "@/types/challenge";
+import LanguageMenu from "./LanguageMenu";
+import FontSizeMenu from "./FontSizeMenu";
 
-// The markdown editor touches `window`, so it must not render on the server.
 const SimpleMDE = dynamic(() => import("react-simplemde-editor"), {
   ssr: false,
 });
+
+const MDE_OPTIONS = { spellChecker: false, minHeight: "250px" };
 
 const LEVELS = ["Easy", "Moderate", "Hard"] as const;
 const LANGUAGES = ["js", "py"] as const;
@@ -56,7 +60,7 @@ const challengeSchema = z.object({
   functionName: z.string().min(1, "Function name is required"),
   language: z.enum(LANGUAGES),
   code: z.string().min(1, "Code is required"),
-  tests: z.array(testSchema).min(1, "Add at least one test"),
+  tests: z.array(testSchema).min(0, ""),
 });
 
 type ChallengeFormData = z.infer<typeof challengeSchema>;
@@ -81,13 +85,15 @@ const ChallengeForm = ({ challenge }: ChallengeFormProps) => {
   const router = useRouter();
   const isEditing = !!challenge;
   const [isPending, startTransition] = useTransition();
-  const [fontSize, setFontSize] = useState(16);
+
+  const dispatch = useAppDispatch();
+  const reduxLanguage = useAppSelector((state) => state.editor.language);
+  const fontSize = useAppSelector((state) => state.editor.fontSize);
 
   const {
     register,
     control,
     handleSubmit,
-    watch,
     setValue,
     formState: { errors },
   } = useForm<ChallengeFormData>({
@@ -97,9 +103,9 @@ const ChallengeForm = ({ challenge }: ChallengeFormProps) => {
       category: challenge?.category ?? "",
       level: challenge?.level ?? "Easy",
       description: challenge?.description ?? "",
-      functionName: challenge?.code.functionName ?? "",
-      language: challenge?.code.language ?? "js",
-      code: challenge?.code.code ?? "",
+      functionName: challenge?.code?.functionName ?? "",
+      language: challenge?.code?.language ?? reduxLanguage,
+      code: challenge?.code?.code ?? "",
       tests:
         challenge?.tests.map((test) => ({
           ...test,
@@ -108,16 +114,17 @@ const ChallengeForm = ({ challenge }: ChallengeFormProps) => {
     },
   });
 
+  useEffect(() => {
+    setValue("language", reduxLanguage);
+  }, [reduxLanguage, setValue]);
+
+  useEffect(() => {
+    if (challenge?.code?.language) {
+      dispatch(setLanguage(challenge.code.language));
+    }
+  }, [challenge, dispatch]);
+
   const { fields, append, remove } = useFieldArray({ control, name: "tests" });
-  const language = watch("language");
-
-  const cycleLanguage = () =>
-    setValue("language", language === "js" ? "py" : "js");
-
-  const cycleFontSize = () =>
-    setFontSize(
-      FONT_SIZES[(FONT_SIZES.indexOf(fontSize) + 1) % FONT_SIZES.length],
-    );
 
   const onSubmit = (data: ChallengeFormData) => {
     const payload: ChallengeInput = {
@@ -133,7 +140,6 @@ const ChallengeForm = ({ challenge }: ChallengeFormProps) => {
       tests: data.tests.map((test) => ({
         type: test.type,
         name: test.name,
-        // Numeric arguments are stored as real numbers, not strings
         value: test.type === "number" ? Number(test.value) : test.value,
         output: test.output,
         weight: test.weight,
@@ -147,7 +153,7 @@ const ChallengeForm = ({ challenge }: ChallengeFormProps) => {
 
       if (result.success) {
         toast.success(result.message);
-        router.push("/");
+        router.push("/challenges");
       } else {
         toast.error(result.message);
       }
@@ -196,7 +202,7 @@ const ChallengeForm = ({ challenge }: ChallengeFormProps) => {
               <SimpleMDE
                 value={field.value}
                 onChange={field.onChange}
-                options={{ spellChecker: false, minHeight: "250px" }}
+                options={MDE_OPTIONS}
               />
             )}
           />
@@ -216,7 +222,7 @@ const ChallengeForm = ({ challenge }: ChallengeFormProps) => {
             type="submit"
             disabled={isPending}
             className="bg-plum text-white">
-            {isPending ? "Saving..." : isEditing ? "Save" : "Create"}
+            {isPending ? "Saving..." : isEditing ? "Edit" : "Create"}
           </Button>
         </div>
 
@@ -224,25 +230,29 @@ const ChallengeForm = ({ challenge }: ChallengeFormProps) => {
           <div className="flex items-center justify-between mb-1">
             <label className="text-sm text-gray-700">Code *</label>
             <div className="flex gap-2">
-              <Button type="button" variant="outline" onClick={cycleLanguage}>
-                Language: {language}
-              </Button>
-              <Button type="button" variant="outline" onClick={cycleFontSize}>
-                Font size: {fontSize}
-              </Button>
+              <LanguageMenu />
+              <FontSizeMenu />
             </div>
           </div>
           <Controller
             control={control}
             name="code"
             render={({ field }) => (
-              <CodeMirror
-                value={field.value}
-                onChange={field.onChange}
-                height="200px"
-                style={{ fontSize }}
-                extensions={[javascript(), python()]}
-                className="border rounded-md overflow-hidden"
+              <Controller
+                control={control}
+                name="code"
+                render={({ field }) => (
+                  <CodeMirror
+                    value={field.value}
+                    onChange={field.onChange}
+                    height="200px"
+                    style={{ fontSize: `${fontSize}px` }}
+                    extensions={[
+                      reduxLanguage === "py" ? python() : javascript(),
+                    ]}
+                    className="border rounded-md overflow-hidden"
+                  />
+                )}
               />
             )}
           />
@@ -334,15 +344,22 @@ const ChallengeForm = ({ challenge }: ChallengeFormProps) => {
                     <Button
                       type="button"
                       variant="destructive"
+                      size="icon"
+                      className="bg-red-500 hover:bg-red-600"
                       onClick={() => remove(index)}>
-                      Delete
+                      <img
+                        src="/docs/recycle-bin-icon.svg"
+                        alt="Delete"
+                        width={18}
+                        height={18}
+                      />
                     </Button>
                   </div>
                 </div>
               );
             })}
           </div>
-          {/* Shown when the array itself is invalid (e.g. no tests added) */}
+          {/* Shown when the array itself is invalid*/}
           <ErrorMessage
             message={errors.tests?.root?.message ?? errors.tests?.message}
           />

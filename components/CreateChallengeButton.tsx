@@ -1,11 +1,14 @@
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 const CreateChallengeButton = () => {
   return (
-    <Button className="bg-plum text-white p-2 pt-3 rounded-sm w-fit">
-      <Link href="/challenges/new">Create challenge</Link>
-    </Button>
+    <Link
+      href="/challenges/new"
+      className={cn(buttonVariants(), "bg-plum text-white p-2 rounded-sm w-fit")}>
+      Create challenge
+    </Link>
   );
 };
 

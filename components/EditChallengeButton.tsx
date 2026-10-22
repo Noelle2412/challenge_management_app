@@ -1,15 +1,17 @@
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import editIcon from "../public/docs/editIcon.svg";
 import Image from "next/image";
+import { buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import editIcon from "../public/docs/editIcon.svg";
 
 const EditChallengeButton = ({ id }: { id: string }) => {
   return (
-    <Button variant="outline" size="sm" className=" bg-plum">
-      <Link href={`/challenges/${id}/edit`}>
-        <Image src={editIcon} alt="Edit" className="w-5" />
-      </Link>
-    </Button>
+    <Link
+      href={`/challenges/${id}/edit`}
+      aria-label="Edit challenge"
+      className={cn(buttonVariants({ variant: "outline", size: "sm" }), "bg-plum")}>
+      <Image src={editIcon} alt="" className="w-5" />
+    </Link>
   );
 };
 
