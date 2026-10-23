@@ -58,7 +58,7 @@ const SignIn = () => {
       </form>
       <p className="text-sm">
         New to CLA?{" "}
-        <Link href="/sign_up" className="text-[#3B82F7]">
+        <Link to="/sign_up" className="text-[#3B82F7]">
           Sign up
         </Link>
       </p>

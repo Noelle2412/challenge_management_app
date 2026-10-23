@@ -76,7 +76,7 @@ const SignUp = () => {
       </form>
       <p className="text-sm">
         Already have an account?:{" "}
-        <Link href="/sign_in" className="text-[#3B82F7]">
+        <Link to="/sign_in" className="text-[#3B82F7]">
           Login
         </Link>
       </p>
